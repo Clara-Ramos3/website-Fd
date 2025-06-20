@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCoqbjFQjZJSbU5-3xk7A9VqiDiMLKPeyM&libraries=places"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      }
+      .header {
+        background: #05364e;
+        color: white;
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+      }
+      .header img {
+        height: 2rem;
+      }
+      .content {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+      }
+      .section {
+        margin-bottom: 2rem;
+      }
+      .features {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+      .feature {
+        flex: 1;
+        min-width: 250px;
+      }
+      .resources, .libraries, .mais {
+        background: #05364e;
+        padding: 1rem;
+        margin-top: 2rem;
+      }
+      .resources a, .libraries a, .mais a {
+        color: #a0aec0;
+        text-decoration: none;
+        display: block;
+        margin: 0.5rem 0;
+      }
+      .resources a:hover, .libraries a:hover, .mais a:hover {
+        color: white;
+      }
+      #map {
+        height: 400px;
+        width: 100%;
+        margin-top: 2rem;
+      }
+
+      .button {
+  --width: 100px;
+  --height: 35px;
+  --tooltip-height: 35px;
+  --tooltip-width: 90px;
+  --gap-between-tooltip-to-button: 18px;
+  --button-color: #05364e;
+  --tooltip-color: #fff;
+  width: var(--width);
+  height: var(--height);
+  background: var(--button-color);
+  position: relative;
+  text-align: center;
+  border-radius: 0.45em;
+  font-family: "Arial";
+  transition: background 0.3s;
+}
+
+.button::before {
+  position: absolute;
+  content: attr(data-tooltip);
+  width: var(--tooltip-width);
+  height: var(--tooltip-height);
+  background-color: var(--tooltip-color);
+  font-size: 0.9rem;
+  color: #111;
+  border-radius: .25em;
+  line-height: var(--tooltip-height);
+  bottom: calc(var(--height) + var(--gap-between-tooltip-to-button) + 10px);
+  left: calc(50% - var(--tooltip-width) / 2);
+}
+
+.button::after {
+  position: absolute;
+  content: '';
+  width: 0;
+  height: 0;
+  border: 10px solid transparent;
+  border-top-color: var(--tooltip-color);
+  left: calc(50% - 10px);
+  bottom: calc(100% + var(--gap-between-tooltip-to-button) - 10px);
+}
+
+.button::after,.button::before {
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.5s;
+}
+
+.text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.button-wrapper,.text,.icon {
+  overflow: hidden;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  color: #fff;
+}
+
+.text {
+  top: 0
+}
+
+.text,.icon {
+  transition: top 0.5s;
+}
+
+.icon {
+  color: #fff;
+  top: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.button:hover {
+  background: #6c18ff;
+}
+
+.button:hover .text {
+  top: -100%;
+}
+
+.button:hover .icon {
+  top: 0;
+}
+
+.button:hover:before,.button:hover:after {
+  opacity: 1;
+  visibility: visible;
+}
+
+.button:hover:after {
+  bottom: calc(var(--height) + var(--gap-between-tooltip-to-button) - 20px);
+}
+
+.button:hover:before {
+  bottom: calc(var(--height) + var(--gap-between-tooltip-to-button));
+}
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+      const { useEffect } = React;
+
+const App = () => {
+  useEffect(() => {
+    const map = new google.maps.Map(document.getElementById("map"), {
+      center: { lat: -8.8390, lng: 13.2894 }, // Coordenadas de Luanda, Angola
+      zoom: 17, // Quanto mais alto, mais perto (melhor para 3D)
+      tilt: 45, // Inclinação para visualização 3D
+      heading: 90, // Direção da câmera
+    });
+
+    // Ativa o controle 3D (opcional)
+    map.setTilt(45);
+  }, []);
+
+
+        return (
+          <div>
+            <header className="header">
+              <img src="Find_-me-removebg-preview.png" alt="Logo" />
+              <h1 className="ml-4 text-xl">Encontra-me</h1>
+            </header>
+
+            <div className="content">
+              <section className="section">
+                <h2 className="text-5xl font-bold text-gray-700">
+                  Sistema de geolocalização de pessoas desaparecidas
+                </h2>
+                <p className="mt-4 text-gray-600">
+                  Cada ponto no mapa representa uma esperança. Ajude a trazer alguém de volta para casa.
+                </p>
+                
+                <a href="Find-me.png" download className="block mt-6 w-fit">
+                <div class="button" data-tooltip="Size: 20Mb">
+                <div class="button-wrapper">
+                  <div class="text">Baixar</div>
+                    <span class="icon">
+                      <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15V3m0 12l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 0 0 4.561 21h14.878a2 2 0 0 0 1.94-1.515L22 17"></path></svg>
+                    </span>
+                  </div>
+                </div>
+                </a>
+              </section>
+              <section className="section">
+                <div className="features mt-4">
+                  <div className="feature text-center">
+                    <img
+                      src="https://static.vecteezy.com/ti/vetor-gratis/p1/2837653-icone-da-comunidade-no-da-linha-branca-vetor.jpg"
+                      alt="Conectando com a realidade"
+                      className="w-16 h-16 mx-auto"
+                    />
+                    <h3 className="mt-2 text-gray-700">Conectando com a realidade</h3>
+                    <p>
+                      O sistema permite registrar desaparecimentos, receber alertas em tempo real e entrar em
+                      contato direto com a polícia ou com quem possa ajudar.
+                    </p>
+                  </div>
+
+                  <div className="feature text-center">
+                    <img
+                      src="https://media.istockphoto.com/id/1071288006/vector/modularity-carvings.jpg?s=612x612&w=0&k=20&c=ZRDuxrfuyTC77FYoqOVCKxej2WoawXAzXcNfJu8YH14="
+                      alt="Extensível"
+                      className="w-16 h-16 mx-auto"
+                    />
+                    <h3 className="mt-2 text-gray-700">Extensível</h3>
+                    <p>
+                      Nosso sistema é modular, permitindo que novas funcionalidades sejam integradas com
+                      facilidade, como reconhecimento facial, atualizações do estado do caso e filtros avançados.
+                    </p>
+                  </div>
+
+                  <div className="feature text-center">
+                    <img
+                      src="https://png.pngtree.com/png-clipart/20230824/original/pngtree-corporate-social-responsibility-glyph-icon-picture-image_8336178.png"
+                      alt="Impacto social"
+                      className="w-16 h-16 mx-auto"
+                    />
+                    <h3 className="mt-2 text-gray-700">Impacto social</h3>
+                    <p>
+                      Muito além da tecnologia. Esse projeto nasceu de uma realidade que afeta milhares de
+                      famílias. Acreditamos que com informação, empatia e tecnologia, é possível salvar vidas.
+                    </p>
+                  </div>
+                </div>
+              </section>
+
+              <div id="map"></div>
+
+              <div className="resources">
+                <h3 className="text-gray-300">Acesso Rápido</h3>
+                <a href="#">Cadastrar Desaparecido</a>
+                <a href="#">Buscar por Região</a>
+                <a href="#">Fale com a Polícia</a>
+                <a href="#">Guia do Usuário</a>
+              </div>
+
+              <div className="libraries">
+                <h3 className="text-gray-300">Impacto Social</h3>
+                <a href="#">Ações em tempo real</a>
+                <a href="#">Juntos por uma causa maior</a>
+                <a href="#">Histórias de reencontros</a>
+              </div>
+              <p className="text-center text-gray-500 mt-4">
+                © 2025 Sistema de Geolocalização de Pessoas Desaparecidas – Todos os direitos reservados.
+              </p>
+            </div>
+          </div>
+        );
+      };
+
+      ReactDOM.render(<App />, document.getElementById("root"));
+    </script>
+  </body>
+</html>
